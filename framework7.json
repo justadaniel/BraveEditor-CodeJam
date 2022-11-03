@@ -1,0 +1,27 @@
+{
+  "cwd": "C:\\Development\\Electron\\BraveEditor",
+  "type": [
+    "cordova"
+  ],
+  "name": "BraveEditor",
+  "framework": "react",
+  "template": "split-view",
+  "bundler": "vite",
+  "cssPreProcessor": "scss",
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": true,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false,
+  "pkg": "com.braveworld.BraveEditor",
+  "cordova": {
+    "folder": "cordova",
+    "platforms": [
+      "electron"
+    ],
+    "plugins": []
+  }
+}

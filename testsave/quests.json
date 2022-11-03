@@ -1,0 +1,18 @@
+{
+	"title": "Hello World!",
+	"slug": "hello-world",
+	"guid": "e90ca492-49de-4dc6-bfff-f450b7ad9561",
+	"last_modified": 1667322299719,
+	"quest_type": "bounty",
+	"main_story_quest": false,
+	"description": "This is where the description goes.",
+	"steps": [
+		{
+			"title": "",
+			"slug": "",
+			"guid": "",
+			"quest_step_type": "travel",
+			"description": ""
+		}
+	]
+}

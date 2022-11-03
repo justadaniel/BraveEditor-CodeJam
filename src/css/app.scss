@@ -1,0 +1,105 @@
+$splitviewMasterWidth: 600;
+
+:root {
+	--f7-panel-left-width: 33vw;
+	--f7-menu-list-selected-text-color: white;
+	--f7-menu-list-offset: 0px;
+	--f7-menu-list-border-radius: 0px;
+}
+
+.list.inset.menu-list {
+	--f7-menu-list-border-radius: var(--f7-list-inset-border-radius);
+}
+
+@media only screen and (min-width: 1200px) {
+	:root {
+		--f7-panel-left-width: 400px;
+	}
+}
+
+#appbar {
+	-webkit-app-region: drag;
+}
+
+.md .contacts-list li:not(.list-group-title) {
+	padding-left: 0px;
+}
+
+/* iOS Cordova Tweak */
+.device-cordova.device-ios {
+	height: 100vh;
+}
+
+/* Left Panel right border when it is visible by breakpoint */
+.panel-left.panel-in-breakpoint:before {
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 100%;
+	width: 1px;
+	background: rgba(0, 0, 0, 0.1);
+	content: "";
+	z-index: 6000;
+}
+
+/* Hide navbar link which opens left panel when it is visible by breakpoint */
+.panel-left.panel-in-breakpoint ~ .view .navbar .panel-open[data-panel="left"] {
+	display: none;
+}
+
+/*
+  Extra borders for main view and left panel for iOS theme when it behaves as panel (before breakpoint size)
+*/
+.ios .panel-left:not(.panel-in-breakpoint).panel-in ~ .view-main:before,
+.ios .panel-left:not(.panel-in-breakpoint).panel-closing ~ .view-main:before {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 1px;
+	background: rgba(0, 0, 0, 0.1);
+	content: "";
+	z-index: 6000;
+}
+
+.block.centered {
+	text-align: center;
+}
+
+.block.footer p {
+	font-size: 10pt;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.block.footer span {
+	color: white;
+}
+
+.block.empty-list-text p {
+	font-size: 14pt;
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.block.empty-list-text.centered .button {
+	max-width: 200px;
+	margin: auto;
+}
+
+li.swipeout.swipeout-deleting.quest_step-list-item,
+li.swipeout.swipeout-deleting.quest_reward-list-item {
+	background: var(--f7-swipeout-delete-button-bg-color);
+}
+
+.swipeout .not-delete-swipeout {
+	background-color: var(--f7-swipeout-delete-button-bg-color);
+}
+
+// a:not(.disabled) {
+// 	// color: var(--f7-navbar-link-color, var(--f7-bars-link-color, var(--f7-theme-color)));
+// 	filter: grayscale(0);
+// }
+
+// a.disabled {
+// 	// color: var(--f7-navbar-link-color, var(--f7-bars-link-color, var(--f7-theme-color)));
+// 	filter: grayscale(1);
+// }

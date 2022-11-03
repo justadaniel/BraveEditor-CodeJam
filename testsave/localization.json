@@ -1,0 +1,10 @@
+{
+	"master_strings": [
+		"quest.hello_world-title",
+		"quest.hello_world-description"
+	],
+	"en": {
+		"quest.hello_world-title": "Hello World!",
+		"quest.hello_world-description": "This is where the description goes."
+	}
+}

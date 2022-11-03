@@ -1,0 +1,11 @@
+{
+	"recommendations": [
+		"planbcoding.vscode-react-refactor",
+		"christian-kohler.npm-intellisense",
+		"formulahendry.auto-rename-tag",
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"burkeholland.simple-react-snippets",
+		"abdullahceylan.vscode-react-component-generator"
+	]
+}

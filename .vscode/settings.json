@@ -1,0 +1,11 @@
+{
+    "editor.insertSpaces": false,
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.useTabStops": true,
+    "editor.tabCompletion": "on",
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false
+}
