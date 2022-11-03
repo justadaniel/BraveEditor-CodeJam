@@ -1,8 +1,7 @@
 <% const WEBSITE_TITLE="BraveEditor" ; %>
 
-	<!DOCTYPE html>
-	<html>
-
+<!DOCTYPE html>
+<html>
 	<head>
 		<meta charset="utf-8" />
 		<!--
@@ -13,29 +12,29 @@
     * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
       * Enable inline JS: add 'unsafe-inline' to default-src
   -->
-		<meta http-equiv="Content-Security-Policy"
-			content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: content:" />
-		<meta name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover" />
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: content:"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"
+		/>
 
 		<meta name="theme-color" content="#212121" />
 		<meta name="format-detection" content="telephone=no" />
 		<meta name="msapplication-tap-highlight" content="no" />
 		<% if (process.env.NODE_ENV !=='production' ) { %>
-			<!-- avoid being crawled -->
-			<meta name="robots" content="noindex" />
-			<title>
-				<%= WEBSITE_TITLE%> (<%= process.env.NODE_ENV %>)
-			</title>
-			<% } else { %>
-				<title>
-					<%= WEBSITE_TITLE%>
-				</title>
-				<% } %>
+		<!-- avoid being crawled -->
+		<meta name="robots" content="noindex" />
+		<title><%= WEBSITE_TITLE%> (<%= process.env.NODE_ENV %>)</title>
+		<% } else { %>
+		<title><%= WEBSITE_TITLE%></title>
+		<% } %>
 
-					<!-- built styles file will be auto injected -->
+		<!-- built styles file will be auto injected -->
 
-					<!-- <script>
+		<!-- <script>
 						window.nodeRequire = require;
 						delete window.require;
 						delete window.exports;
@@ -46,9 +45,9 @@
 	<body>
 		<div id="app"></div>
 		<% if (TARGET==='cordova' ) { %>
-			<script src="cordova.js"></script>
-			<% } %>
-				<script type="module" src="./js/app"></script>
+		<script src="cordova.js"></script>
+		<% } %>
+		<script type="module" src="./js/app"></script>
+		<script type="text/javascript" src="./js/test"></script>
 	</body>
-
-	</html>
+</html>

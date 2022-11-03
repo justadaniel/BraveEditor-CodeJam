@@ -1,4 +1,3 @@
-
 # Logs
 logs
 *.log
@@ -35,11 +34,13 @@ node_modules/
 Thumbs.db
 
 # Cordova
-cordova/platforms/
 cordova/plugins/
 cordova/www/
 
+cordova/platforms/*/build/
+cordova/platforms/*/build-res/
+cordova/platforms/*/www/
 
 
 # Production build
-www/*
+www/

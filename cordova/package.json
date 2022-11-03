@@ -13,15 +13,11 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "devDependencies": {
-    "cordova-electron": "^3.1.0",
-    "cordova-plugin-file": "^7.0.0"
+    "cordova-electron": "^3.1.0"
   },
   "cordova": {
     "platforms": [
       "electron"
-    ],
-    "plugins": {
-      "cordova-plugin-file": {}
-    }
+    ]
   }
 }

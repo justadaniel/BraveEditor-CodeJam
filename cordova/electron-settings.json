@@ -3,12 +3,10 @@
 		"width": 980,
 		"height": 768,
 		"minWidth": 980,
-		"autoHideMenuBar": true,
+		"autoHideMenuBar": false,
 		"webPreferences": {
 			"nodeIntegration": true,
-			"contextIsolation": false,
-			"enableRemoteModule": true,
-			"webviewTag": true
+			"devTools": false
 		}
 	}
 }
