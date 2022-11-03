@@ -62,3 +62,17 @@ There is also cordova Electron platform installed. To learn more about it and El
 
 -   [Cordova Electron Platform Guide](https://cordova.apache.org/docs/en/latest/guide/platforms/electron/index.html)
 -   [Official Electron Documentation](https://electronjs.org/docs)
+
+## Screenshots
+
+<img src="docs/0.gif" width="640"/>
+
+<em>Loading the quests file.</em>
+
+<img src="docs/1.gif" width="640"/>
+
+<em>Editing the Quest called "A Tablet's Worth" and make it a mission that is required to be completed to finish the game.</em>
+
+<img src="docs/2.gif" width="640"/>
+
+<em>Removing the quest step from "The Battle Within" and saving the changes.</em>
