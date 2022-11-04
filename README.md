@@ -1,12 +1,14 @@
 # BraveEditor (CodeJam)
 
-This time for _CodeJam_, I wanted to make an app that can assist me with all of my BraveEditor is a cross-platform desktop app that allows quest designers to create their own quests for an engine-agnostic video game while not having to deal with the nuances of a game engine running all the time. The app exports a file that can then be ingested into a game engine, such as Unity or Unreal, or even your own custom engine. The way it's set up is very modular thanks to React and can have features built into it with ease. The goal in the future would be to incorporate localization and dialogue into the pipeline.
+This time for _CodeJam_, I wanted to make an app that can assist me with all of my data-related needs. Introducing BraveEditor, a cross-platform desktop app that allows quest designers to create their own quests for an engine-agnostic video game while not having to deal with the nuances of a game engine running all the time. The app exports a file that can then be ingested into a game engine, such as Unity or Unreal, or even your own custom engine. The way it's set up is very modular thanks to React and can have features built into it with ease. The goal in the future would be to incorporate localization and dialogue into the pipeline.
 
 **Tech Used:** React, Vite, Cordova, Electron, Framework7, TypeScript, SCSS/SASS
 
 ## "CodeJam" Background
 
 I set aside a little bit of my time to participate in what I call, _CodeJam_. CodeJam is what I call my personal "game jam" however it doesn't need to fall into the category of video games.
+
+Game Jam _(noun)_: an event in which video game developers work in groups to conceptualize, design, and build a functioning version of one or more game projects over a restricted period of a few hours or days.
 
 ## Features
 
