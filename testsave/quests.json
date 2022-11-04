@@ -1,18 +1,48 @@
 {
-	"title": "Hello World!",
-	"slug": "hello-world",
-	"guid": "e90ca492-49de-4dc6-bfff-f450b7ad9561",
-	"last_modified": 1667322299719,
-	"quest_type": "bounty",
-	"main_story_quest": false,
-	"description": "This is where the description goes.",
-	"steps": [
+	"lastModified": 1667325049027,
+	"quests": [
 		{
-			"title": "",
-			"slug": "",
-			"guid": "",
-			"quest_step_type": "travel",
-			"description": ""
+			"title": "The Lost Patrol",
+			"slug": "the-lost-patrol",
+			"guid": "945009ea-9dfe-48a4-b7f9-6ef6479c4e69",
+			"lastModified": 1667325049027,
+			"description": "I'm too lazy to write a description. Write one yourself.",
+			"questType": "kill",
+			"isMainStoryQuest": true
+		},
+		{
+			"title": "Pickman's Gift",
+			"slug": "pickmans-gift",
+			"guid": "bc2796f7-bb29-488e-905e-c7fcee05de1b",
+			"lastModified": 1667325074989,
+			"description": "Jeff has been on the hunt for this stone tablet for years. However, he's pretty stupid so he's been looking inside various Goodwill locations instead of actually traveling anywhere.",
+			"questType": "bounty",
+			"isMainStoryQuest": false,
+			"steps": [
+				{
+					"guid": "ee74037c-87c2-4dbc-b07e-edfa65944e6c",
+					"title": "Find the Stone Tablet",
+					"questStepType": "retrieve",
+					"associatedItemNameTag": "stonetablet001",
+					"stepIndex": -1
+				},
+				{
+					"guid": "6ded6e2c-4151-456e-9a48-84e65b10cebb",
+					"title": "Bring the Stone Tablet to Jeff",
+					"questStepType": "talk",
+					"associatedItemNameTag": "stonetablet001",
+					"stepIndex": -1
+				}
+			],
+			"rewards": [
+				{
+					"title": "XP",
+					"guid": "31a40f4d-473b-4a6f-8c98-760bf6f77233",
+					"rewardType": "xp",
+					"quantity": 27,
+					"stepIndex": -1
+				}
+			]
 		}
 	]
 }

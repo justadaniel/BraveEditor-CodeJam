@@ -1,10 +1,4 @@
-import React, {
-	useState,
-	window,
-	FileHandle,
-	FileSystem,
-	FileReader,
-} from "react";
+import React, { useState } from "react";
 import * as ReactDOM from "react-dom";
 import AppSection from "../models/appsection";
 import Globals from "../js/globals";
@@ -40,20 +34,63 @@ import {
 import utils from "../js/utils";
 
 import store from "../js/store";
+import { Quest } from "../models/Quest";
+import { IQuestSaveData, QuestSaveData } from "../models/QuestSaveData";
 
 const OpenFileLocationDialog = (guid: string) => {
-	const [fileLocation, setFileLocation] = useState("");
+	const [loadedFile, setLoadedFile] = useState(undefined);
+	const [loadedSaveData, setLoadedSaveData] = useState(undefined);
 
-	async function simulateFileLoading() {
+	async function storeFileInMemory(file: File) {
+		if (file == undefined) return;
+
+		var saveData: IQuestSaveData =
+			await utils.loadJsonFromFile<IQuestSaveData>(file);
+
+		if (saveData == undefined) {
+			return;
+		}
+
+		setLoadedFile(file);
+		setLoadedSaveData(saveData);
+		console.log(file);
+		// console.log(questData);
+	}
+
+	async function loadDataIntoStore() {
 		f7.preloader.show();
 
 		setTimeout(() => {
 			store.dispatch("loadQuests", {
-				filePath: fileLocation,
+				file: loadedFile,
 			});
 			f7.preloader.hide();
 			f7.popup.close();
 		}, 1000);
+	}
+
+	function getFileName(): string {
+		if (loadedFile != undefined) return loadedFile.name;
+		else return "";
+	}
+
+	function getFileSize(): string {
+		if (loadedFile != undefined) return `${loadedFile.size} bytes`;
+		else return "";
+	}
+
+	function getLastFileModifiedDate(): string {
+		if (loadedFile != undefined)
+			return utils.numberToModifiedDateString(loadedFile.lastModified);
+		else return "";
+	}
+
+	function getFileQuestsCount(): string {
+		var saveData: IQuestSaveData = loadedSaveData as IQuestSaveData;
+		if (saveData != undefined) {
+			console.log(saveData);
+			return utils.pluralize(saveData.quests, "Quest", "Quests");
+		} else return "";
 	}
 
 	return (
@@ -69,12 +106,12 @@ const OpenFileLocationDialog = (guid: string) => {
 							<Link
 								style={{
 									display:
-										fileLocation != "" &&
-										fileLocation != undefined
+										loadedFile != "" &&
+										loadedFile != undefined
 											? "block"
 											: "none",
 								}}
-								onClick={simulateFileLoading}
+								onClick={loadDataIntoStore}
 							>
 								Open
 							</Link>
@@ -82,10 +119,30 @@ const OpenFileLocationDialog = (guid: string) => {
 					</Navbar>
 					<List noHairlinesMd inset>
 						<ListInput
-							label="File Location"
+							label="Name"
 							type="text"
-							placeholder="C:/Meh/Path/Data/quests.json"
-							value={fileLocation}
+							value={getFileName()}
+							readonly
+							disabled
+						/>
+						<ListInput
+							label="Size"
+							type="text"
+							value={getFileSize()}
+							readonly
+							disabled
+						/>
+						<ListInput
+							label="Last Modified"
+							type="text"
+							value={getLastFileModifiedDate()}
+							readonly
+							disabled
+						/>
+						<ListInput
+							label="Number of Quests"
+							type="text"
+							value={getFileQuestsCount()}
 							readonly
 							disabled
 						/>
@@ -93,19 +150,13 @@ const OpenFileLocationDialog = (guid: string) => {
 							label="File Input"
 							id="fileinput"
 							type="file"
-							placeholder="C:/Meh/Path/Data/quests.json"
 							accept=".json"
 							style={{ display: "none" }}
-							onChange={(e) => {
-								var chosenFilePath = e.target.value;
-								if (
-									chosenFilePath == "" ||
-									chosenFilePath == undefined
-								)
-									return;
-
-								console.log(chosenFilePath);
-								setFileLocation(chosenFilePath);
+							onChange={async (e) => {
+								var file: File = await utils.loadFileFromPicker(
+									e
+								);
+								storeFileInMemory(file);
 							}}
 						/>
 					</List>

@@ -23,10 +23,13 @@ import {
 	useStore,
 	SwipeoutActions,
 	SwipeoutButton,
+	Stepper,
 } from "framework7-react";
 import utils from "../js/utils";
 import Globals from "../js/globals";
-import { Quest, QuestStep, QuestReward } from "../models/quest";
+import { Quest, IQuest } from "../models/Quest";
+import { QuestReward, IQuestReward } from "../models/QuestReward";
+import { QuestStep, IQuestStep } from "../models/QuestStep";
 import store from "../js/store";
 import { compileString } from "sass";
 
@@ -37,7 +40,7 @@ const QuestDetailsWindow = (props) => {
 	// const { f7route, f7router } = props;
 	// console.log(props.guid);
 
-	let currentQuest: Quest = useStore(store, "quests").find((obj) => {
+	let currentQuest: IQuest = useStore(store, "quests").find((obj) => {
 		return obj.guid === props.guid;
 	});
 	// console.log(currentQuest.title);
@@ -71,28 +74,17 @@ const QuestDetailsWindow = (props) => {
 	const addSymbolF7: string = "plus";
 	const addSymbolMaterial: string = "add";
 
-	function UpdateQuestTitle(val: string) {
-		setQuestTitle(val);
-		setSlug(utils.sanitizeImportantString(val));
-		checkForChanges();
+	async function UpdateQuestTitle(val: string) {
+		await setQuestTitle(val);
+		await setSlug(utils.sanitizeImportantString(val));
+		await markAsChanged();
 	}
 
-	function checkForChanges() {
-		if (
-			currentQuest.title != questTitle ||
-			currentQuest.slug != slug ||
-			currentQuest.guid != guid ||
-			currentQuest.questType != questType ||
-			currentQuest.isMainStoryQuest != isMainStoryQuest ||
-			currentQuest.description != description ||
-			currentQuest.steps != questSteps ||
-			currentQuest.rewards != questRewards
-		)
-			setWereChangesMade(true);
-		else setWereChangesMade(false);
+	async function markAsChanged() {
+		await setWereChangesMade(true);
 	}
 
-	function commitChanges() {
+	async function commitChanges() {
 		// if (!wereChangesMade) {
 		// 	console.log("Changes weren't made.");
 		// 	return;
@@ -117,7 +109,7 @@ const QuestDetailsWindow = (props) => {
 		setWereChangesMade(false);
 	}
 
-	function resetChanges() {
+	async function resetChanges() {
 		setQuestTitle(currentQuest.title);
 		setSlug(currentQuest.slug);
 		setGuid(currentQuest.guid);
@@ -134,7 +126,12 @@ const QuestDetailsWindow = (props) => {
 		setWereChangesMade(false);
 	}
 
-	function addQuestStep() {
+	async function copyJsonToClipboard() {
+		utils.copyTextToClipboard(JSON.stringify(currentQuest), "Quest JSON");
+		console.log(currentQuest);
+	}
+
+	async function addQuestStep() {
 		if (!ADD_QUEST_STEP_ENABLED) {
 			f7.dialog.alert("Not Implemented Yet");
 			return;
@@ -143,17 +140,23 @@ const QuestDetailsWindow = (props) => {
 		if (questSteps == undefined || questSteps.length == 0)
 			setQuestSteps([]);
 
+		const title: string = "New Step";
+		const guid: string = crypto.randomUUID();
+
 		var stepsWorkingCopy = [
 			...questSteps,
 			new QuestStep({
-				title: "New Step",
+				title: title,
+				slug: utils.sanitizeImportantString(title),
+				summary: guid,
+				guid: guid,
 			}),
 		];
 
 		setQuestSteps(stepsWorkingCopy);
 	}
 
-	function addQuestReward() {
+	async function addQuestReward() {
 		if (!ADD_QUEST_REWARD_ENABLED) {
 			f7.dialog.alert("Not Implemented Yet");
 			return;
@@ -162,24 +165,31 @@ const QuestDetailsWindow = (props) => {
 		if (questRewards == undefined || questRewards.length == 0)
 			setQuestRewards([]);
 
+		const title: string = "New Reward";
+		const guid: string = crypto.randomUUID();
+
 		var rewardsWorkingCopy = [
 			...questRewards,
 			new QuestReward({
-				title: "New Reward",
+				title: title,
+				slug: utils.sanitizeImportantString(title),
+				summary: guid,
+				guid: guid,
+				quantity: 1,
 			}),
 		];
 
 		setQuestRewards(rewardsWorkingCopy);
 	}
 
-	function deleteQuestStep(guid: string) {
+	async function deleteQuestStep(guid: string) {
 		var stepsWorkingCopy = questSteps.filter((x) => x.guid != guid);
 		console.log(stepsWorkingCopy);
 		setQuestSteps([...stepsWorkingCopy]);
 		console.log(`Removed Quest Step with a GUID of ${guid}.`);
 	}
 
-	function deleteQuestReward(guid: string) {
+	async function deleteQuestReward(guid: string) {
 		// const guid: string = getGuidFromSwipeoutDeletedElement("quest_reward");
 		// var rewardsWorkingCopy = questSteps.filter((x) => x.guid != guid);
 		// setQuestRewards(rewardsWorkingCopy);
@@ -213,14 +223,15 @@ const QuestDetailsWindow = (props) => {
 						sortableOpposite
 						sortableEnabled
 					>
-						{questSteps.map((step) => (
+						{questSteps.map((step: IQuestStep) => (
 							<ListItem
 								title={step.title}
-								after={step.getAssociatedTagText()}
-								subtitle={step.getSummaryText()}
+								after={QuestStep.getAssociatedTagText(step)}
+								subtitle={QuestStep.getSummaryText(step)}
 								text={step.summary}
 								className="quest_step-list-item"
 								key={step.guid}
+								data-guid={step.guid}
 								swipeout
 								sortable
 								onSwipeoutDeleted={() => {
@@ -247,6 +258,7 @@ const QuestDetailsWindow = (props) => {
 						))}
 						<ListButton
 							title="Add Quest Step"
+							className="no-sorting"
 							onClick={addQuestStep}
 						/>
 					</List>
@@ -274,19 +286,29 @@ const QuestDetailsWindow = (props) => {
 			return (
 				<div>
 					<List mediaList inset>
-						{questRewards.map((reward) => (
+						{questRewards.map((reward: IQuestReward) => (
 							<ListItem
-								title="Title"
-								after="After"
-								subtitle="Subtitle"
+								title={reward.title}
+								subtitle={reward.rewardType}
 								text="Text"
+								// after={reward.inventoryItemGuid}
 								className="quest_reward-list-item"
 								key={reward.guid}
+								data-guid={reward.guid}
 								swipeout
 								onSwipeoutDeleted={() =>
 									deleteQuestReward(reward.guid)
 								}
 							>
+								<Stepper
+									value={reward.quantity}
+									min="1"
+									slot="after"
+									onStepperChange={async (e) => {
+										await markAsChanged();
+									}}
+									onBlur={markAsChanged}
+								/>
 								<SwipeoutActions right>
 									<SwipeoutButton
 										delete
@@ -299,6 +321,7 @@ const QuestDetailsWindow = (props) => {
 						))}
 						<ListButton
 							title="Add Reward"
+							className="no-sorting"
 							onClick={addQuestReward}
 						/>
 					</List>
@@ -326,7 +349,7 @@ const QuestDetailsWindow = (props) => {
 					placeholder="My Awesome Quest"
 					value={questTitle}
 					onChange={(e) => UpdateQuestTitle(e.target.value)}
-					onBlur={checkForChanges}
+					onBlur={markAsChanged}
 					info="Visible in Game"
 					clearButton
 				></ListInput>
@@ -335,7 +358,7 @@ const QuestDetailsWindow = (props) => {
 					header="Friendly Name"
 					title={slug != "" ? slug : "{None}"}
 					noChevron
-					onBlur={checkForChanges}
+					onBlur={markAsChanged}
 				>
 					<Button
 						slot="after"
@@ -355,7 +378,7 @@ const QuestDetailsWindow = (props) => {
 					header="GUID"
 					title={guid != "" ? guid : "None"}
 					noChevron
-					onBlur={checkForChanges}
+					onBlur={markAsChanged}
 				>
 					<Button
 						slot="after"
@@ -392,11 +415,11 @@ const QuestDetailsWindow = (props) => {
 				>
 					<select
 						name="quest_type"
-						onChange={(e) => {
-							setQuestType(e.target.value);
-							checkForChanges();
+						onChange={async (e) => {
+							await setQuestType(e.target.value);
+							await markAsChanged();
 						}}
-						onBlur={checkForChanges}
+						onBlur={markAsChanged}
 						value={questType}
 					>
 						<option value="bounty">Bounty</option>
@@ -409,8 +432,11 @@ const QuestDetailsWindow = (props) => {
 					<Toggle
 						slot="after"
 						defaultChecked={isMainStoryQuest}
-						onChange={(e) => setIsMainStoryQuest(e.target.checked)}
-						onBlur={checkForChanges}
+						onChange={async (e) => {
+							await setIsMainStoryQuest(e.target.checked);
+							await markAsChanged();
+						}}
+						onBlur={markAsChanged}
 					/>
 				</ListItem>
 			</List>
@@ -421,8 +447,8 @@ const QuestDetailsWindow = (props) => {
 					label="Description"
 					placeholder="Description goes here..."
 					value={description}
-					onChange={(e) => setDescription(e.target.value)}
-					onBlur={checkForChanges}
+					onChange={async (e) => await setDescription(e.target.value)}
+					onBlur={markAsChanged}
 					info="Visible in Game"
 					clearButton
 				></ListInput>
@@ -452,7 +478,7 @@ const QuestDetailsWindow = (props) => {
 						onClick={resetChanges}
 						large
 						color="red"
-						// disabled={!wereChangesMade}
+						disabled={!wereChangesMade}
 					>
 						Delete Changes
 					</Button>
@@ -461,9 +487,18 @@ const QuestDetailsWindow = (props) => {
 					<Button
 						onClick={commitChanges}
 						large
-						// disabled={!wereChangesMade}
+						disabled={!wereChangesMade}
 					>
 						Commit Changes
+					</Button>
+				</Col>
+				<Col tag="span">
+					<Button
+						onClick={copyJsonToClipboard}
+						large
+						disabled={!wereChangesMade}
+					>
+						Copy to Clipboard
 					</Button>
 				</Col>
 			</Row>

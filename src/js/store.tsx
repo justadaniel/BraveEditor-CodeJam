@@ -1,12 +1,8 @@
 import { createStore } from "framework7/lite";
-import {
-	Quest,
-	QuestStep,
-	QuestReward,
-	QuestType,
-	QuestStepType,
-	RewardType,
-} from "../models/quest";
+import { Quest, IQuest } from "../models/Quest";
+import { QuestReward, IQuestReward, RewardType } from "../models/QuestReward";
+import { QuestStep } from "../models/QuestStep";
+import { IQuestSaveData, QuestSaveData } from "../models/QuestSaveData";
 import utils from "./utils";
 
 const store = createStore({
@@ -37,21 +33,27 @@ const store = createStore({
 			},
 		],
 		quests: [],
+		questsSaveData: undefined,
 	},
 	getters: {
 		products({ state }) {
 			return state.products;
 		},
-		quests({ state }): Quest[] {
-			var quests = Quest.sortByModifiedDate(state.quests);
+		quests({ state }): IQuest[] {
+			var quests = Quest.sortByModifiedDate(state.quests as IQuest[]);
 			return quests;
 		},
-		quest({ state }, guid: string): Quest {
-			var quests = Quest.sortByModifiedDate(state.quests);
+		quest({ state }, guid: string): IQuest {
 			const quest = state.quests.find((obj) => {
 				return obj.guid === guid;
 			});
 			return quest;
+		},
+		questsSaveData({ state }): IQuestSaveData {
+			// var questsSaveData = QuestSaveData.sortByModifiedDate(
+			// 	state.questsSaveData as QuestSaveData
+			// );
+			return state.questsSaveData;
 		},
 		isLoading({ state }): boolean {
 			return state.isLoading;
@@ -67,10 +69,10 @@ const store = createStore({
 		setLoading({ state }, isLoading: boolean) {
 			state.isLoading = isLoading;
 		},
-		setCurrentlyAccessedFile({ state }, filePath: string) {
-			state.currentlyAccessedFilePath = filePath;
-			state.hasFileLoaded = filePath != undefined && filePath != "";
-			console.log("Currently Accessed File: " + filePath);
+		setCurrentlyAccessedFile({ state }, fileName: string) {
+			state.currentlyAccessedFilePath = fileName;
+			state.hasFileLoaded = fileName != undefined && fileName != "";
+			console.log("Currently Accessed File: " + fileName);
 		},
 		setWritingToDisk({ state }, isWritingToDisk: boolean) {
 			state.isWritingToDisk = isWritingToDisk;
@@ -78,64 +80,70 @@ const store = createStore({
 		addProduct({ state }, product) {
 			state.products = [...state.products, product];
 		},
-		loadQuests({ state, dispatch }, { filePath }) {
-			if (filePath == undefined || filePath == "") return;
+		loadQuests({ state, dispatch }, { file }) {
+			if (file == undefined || file == "") return;
 
 			dispatch("setLoading", true);
-			dispatch("setCurrentlyAccessedFile", filePath);
+			dispatch("setCurrentlyAccessedFile", file.name);
 
-			setTimeout(() => {
-				state.quests = [
-					new Quest({
-						title: "A Tablet's Worth",
-						slug: utils.sanitizeImportantString("A Tablet's Worth"),
-						guid: crypto.randomUUID(),
-						lastModified: 1667325074989,
-						description:
-							"Jeff has been on the hunt for this stone tablet for years. However, he's pretty stupid so he's been looking inside various Goodwill locations instead of actually traveling anywhere.",
-						questType: "bounty",
-						isMainStoryQuest: false,
-						steps: [
-							new QuestStep({
-								title: "Find the Stone Tablet",
-								associatedItemNameTag: "stonetablet001",
-								questStepType: QuestStepType.Retrieve,
-								guid: crypto.randomUUID(),
-							}),
-							new QuestStep({
-								title: "Bring the Stone Tablet to Jeff",
-								associatedItemNameTag: "stonetablet001",
-								questStepType: QuestStepType.Talk,
-								guid: crypto.randomUUID(),
-							}),
-						],
-						rewards: [
-							new QuestReward({
-								title: "XP",
-								rewardType: RewardType.XP,
-								guid: crypto.randomUUID(),
-							}),
-						],
-					}),
-					new Quest({
-						title: "The Battle Within",
-						lastModified: 1667325049027,
-						slug: utils.sanitizeImportantString(
-							"The Battle Within"
-						),
-						guid: crypto.randomUUID(),
-						description:
-							"I'm too lazy to write a description. Write one yourself.",
-						questType: "kill",
-						isMainStoryQuest: true,
-						steps: undefined,
-					}),
-				];
+			setTimeout(async () => {
+				var data: IQuestSaveData =
+					await utils.loadJsonFromFile<IQuestSaveData>(file);
+				console.log(data);
+				state.questsSaveData = data;
+				state.quests = data.quests;
+
+				// state.quests = [
+				// 	new Quest({
+				// 		title: "A Tablet's Worth",
+				// 		slug: utils.sanitizeImportantString("A Tablet's Worth"),
+				// 		guid: crypto.randomUUID(),
+				// 		lastModified: 1667325074989,
+				// 		description:
+				// 			"Jeff has been on the hunt for this stone tablet for years. However, he's pretty stupid so he's been looking inside various Goodwill locations instead of actually traveling anywhere.",
+				// 		questType: "bounty",
+				// 		isMainStoryQuest: false,
+				// 		steps: [
+				// 			new QuestStep({
+				// 				title: "Find the Stone Tablet",
+				// 				associatedItemNameTag: "stonetablet001",
+				// 				questStepType: QuestStepType.Retrieve,
+				// 				guid: crypto.randomUUID(),
+				// 			}),
+				// 			new QuestStep({
+				// 				title: "Bring the Stone Tablet to Jeff",
+				// 				associatedItemNameTag: "stonetablet001",
+				// 				questStepType: QuestStepType.Talk,
+				// 				guid: crypto.randomUUID(),
+				// 			}),
+				// 		],
+				// 		rewards: [
+				// 			new QuestReward({
+				// 				title: "XP",
+				// 				rewardType: RewardType.XP,
+				// 				guid: crypto.randomUUID(),
+				// 			}),
+				// 		],
+				// 	}),
+				// 	new Quest({
+				// 		title: "The Battle Within",
+				// 		lastModified: 1667325049027,
+				// 		slug: utils.sanitizeImportantString(
+				// 			"The Battle Within"
+				// 		),
+				// 		guid: crypto.randomUUID(),
+				// 		description:
+				// 			"I'm too lazy to write a description. Write one yourself.",
+				// 		questType: "kill",
+				// 		isMainStoryQuest: true,
+				// 		steps: undefined,
+				// 	}),
+				// ];
 				dispatch("setLoading", false);
 				// dispatch("closeQuestsFile");
 			}, 1000);
 		},
-		addQuest({ state, dispatch }, quest: Quest) {
+		addQuest({ state, dispatch }, quest: IQuest) {
 			dispatch("setLoading", true);
 			state.quests = [...state.quests, quest];
 			dispatch("setLoading", false);
@@ -147,7 +155,7 @@ const store = createStore({
 		closeQuestsFile({ state, dispatch }) {
 			dispatch("setCurrentlyAccessedFile", undefined);
 		},
-		updateQuest({ state, dispatch }, quest: Quest) {
+		updateQuest({ state, dispatch }, quest: IQuest) {
 			let objIndex: number = state.quests.findIndex(
 				(obj) => obj.guid == quest.guid
 			);

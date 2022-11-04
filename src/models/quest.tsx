@@ -1,8 +1,33 @@
 import utils from "../js/utils";
+import IGuid from "./IGuid";
+import { QuestReward } from "./QuestReward";
+import { QuestStep } from "./QuestStep";
 
-export class Quest {
-	guid: string;
+export enum QuestType {
+	Defeat = "defeat",
+	Protect = "protect",
+	Bounty = "bounty",
+	Other = "other",
+}
+export interface IQuest extends IGuid {
 	title: string;
+	lastModified: number;
+	description: string;
+	questType: QuestType;
+	isMainStoryQuest: boolean;
+	steps: QuestStep[];
+	rewards: QuestReward[];
+
+	toString(): string;
+
+	getStepsCountText(): string;
+	getRewardsCountText(): string;
+	getLastModifiedDateString(): string;
+}
+
+export class Quest implements IQuest {
+	title: string;
+	guid: string;
 	slug: string;
 	lastModified: number;
 	description: string;
@@ -12,7 +37,7 @@ export class Quest {
 	rewards: QuestReward[];
 
 	constructor(opts) {
-		Object.assign(this, { c: [] }, opts);
+		Object.assign(this, opts);
 	}
 
 	/******* METHODS *******/
@@ -21,6 +46,7 @@ export class Quest {
 	}
 
 	public getStepsCountText(): string {
+		return "StepsCount";
 		return utils.pluralize(this.steps, "Step", "Steps");
 	}
 
@@ -37,17 +63,14 @@ export class Quest {
 	}
 
 	public getLastModifiedDateString(): string {
-		if (this.lastModified == undefined) return "Not Modified";
-		return `Last Modified ${new Date(this.lastModified).toLocaleString(
-			"en-US",
-			{
-				dateStyle: "medium",
-				timeStyle: "short",
-			}
-		)}`;
+		return Quest.getLastModifiedDateString(this);
 	}
 
-	public static sortByModifiedDate(quests: Quest[]): Quest[] {
+	public static getLastModifiedDateString(quest: IQuest): string {
+		return utils.numberToModifiedDateString(quest.lastModified);
+	}
+
+	public static sortByModifiedDate(quests: IQuest[]): IQuest[] {
 		return quests.sort((a, b) =>
 			a.lastModified < b.lastModified
 				? -1
@@ -56,95 +79,4 @@ export class Quest {
 				: 0
 		);
 	}
-}
-
-export class QuestStep {
-	guid: string;
-	slug: string;
-	title: string;
-	summary: string;
-	questStepType: QuestStepType;
-	associatedItemNameTag: string;
-	stepIndex: number = -1;
-
-	/******* METHODS *******/
-	constructor(opts) {
-		Object.assign(this, { c: [] }, opts);
-	}
-
-	public toString(): string {
-		return this.guid;
-	}
-
-	public generateGuid(): void {
-		this.guid = crypto.randomUUID();
-	}
-
-	public getSummaryText() {
-		if (this.summary != undefined && this.summary != "")
-			return this.summary;
-		else return "(No summary provided)";
-	}
-
-	public getAssociatedTagText() {
-		if (
-			this.associatedItemNameTag != undefined &&
-			this.associatedItemNameTag != ""
-		)
-			return `TagName = "${this.associatedItemNameTag}"`;
-	}
-}
-
-export class QuestReward {
-	title: string;
-	guid: string;
-	slug: string;
-	summary: string;
-	rewardType: RewardType;
-	stepIndex: number = -1;
-
-	inventoryItemGuid: string;
-
-	/******* METHODS *******/
-	constructor(opts) {
-		Object.assign(this, { c: [] }, opts);
-	}
-
-	public toString(): string {
-		return this.title;
-	}
-
-	public get isXP(): boolean {
-		return this.rewardType == RewardType.XP;
-	}
-
-	public get isCurrency(): boolean {
-		return this.rewardType == RewardType.Currency;
-	}
-
-	public get isInventoryItem(): boolean {
-		return this.rewardType == RewardType.InventoryItem;
-	}
-}
-
-export enum QuestType {
-	Defeat = "defeat",
-	Protect = "protect",
-	Bounty = "bounty",
-	Other = "other",
-}
-
-export enum QuestStepType {
-	Retrieve = "retrieve",
-	Talk = "talk",
-	Defeat = "defeat",
-	Protect = "protect",
-	Bounty = "bounty",
-	Other = "other",
-}
-
-export enum RewardType {
-	XP = "xp",
-	Currency = "currency",
-	InventoryItem = "item",
 }

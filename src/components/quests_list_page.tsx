@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import AppSection from "../models/appsection";
 import Globals from "../js/globals";
 import BraveApp from "./app";
-import { Quest, QuestStep } from "../models/quest";
+import { IQuest, IQuestStep, Quest } from "../models/Quest";
+import { QuestStep } from "../models/QuestStep";
 import store from "../js/store";
 
 import {
@@ -33,7 +34,11 @@ const QuestsList = () => {
 	const RECENTS_COUNT: number = 1;
 	const USE_TIMEBASED_SPLIT_LISTS: boolean = false;
 
-	var quests: Quest[] = useStore(store, "quests");
+	var testQuests = useStore(store, "questsSaveData");
+	console.log("Test Quests");
+	console.log(testQuests);
+
+	var quests: IQuest[] = useStore(store, "quests");
 	var isLoading: boolean = useStore(store, "isLoading");
 	var hasFileLoaded: boolean = useStore(store, "hasFileLoaded");
 	var currentlyAccessedFilePath: string = useStore(
@@ -41,8 +46,8 @@ const QuestsList = () => {
 		"currentlyAccessedFilePath"
 	);
 
-	function getQuestsFromRange(startIndex: number, count: number): Quest[] {
-		var questsToReturn: Quest[] = [];
+	function getQuestsFromRange(startIndex: number, count: number): IQuest[] {
+		var questsToReturn: IQuest[] = [];
 		for (let i = startIndex; i < count; i++) {
 			const element = quests[i];
 			questsToReturn.push(element);
@@ -50,12 +55,12 @@ const QuestsList = () => {
 		return questsToReturn;
 	}
 
-	function getRecentlyEditedQuests(): Quest[] {
+	function getRecentlyEditedQuests(): IQuest[] {
 		// return quests;
 		// return store.getters.quests(0, 1);
 		return getQuestsFromRange(0, RECENTS_COUNT);
 	}
-	function getFurtherBackQuests(): Quest[] {
+	function getFurtherBackQuests(): IQuest[] {
 		// return quests;
 		// return store.getters.quests(0, 1);
 		return getQuestsFromRange(RECENTS_COUNT, quests.length);
@@ -63,7 +68,7 @@ const QuestsList = () => {
 
 	const [selectedQuest, setSelectedQuest] = useState("");
 
-	function getQuestDetailsPageLink(quest: Quest): string {
+	function getQuestDetailsPageLink(quest: IQuest): string {
 		return `/quest/${quest.guid}/`;
 	}
 
@@ -105,7 +110,7 @@ const QuestsList = () => {
 				<div>
 					<BlockTitle>Recently Modified</BlockTitle>
 					<List menuList mediaList inset>
-						{getRecentlyEditedQuests().map((q) => (
+						{getRecentlyEditedQuests().map((q: IQuest) => (
 							<ListItem
 								link={getQuestDetailsPageLink(q)}
 								key={q.guid}
@@ -122,7 +127,7 @@ const QuestsList = () => {
 					</List>
 					<BlockTitle>Further Back</BlockTitle>
 					<List menuList mediaList inset>
-						{getFurtherBackQuests().map((q) => (
+						{getFurtherBackQuests().map((q: IQuest) => (
 							<ListItem
 								link={getQuestDetailsPageLink(q)}
 								key={q.guid}
@@ -142,16 +147,18 @@ const QuestsList = () => {
 		} else {
 			return (
 				<List menuList mediaList contactsList>
-					{quests.map((q) => (
+					{quests.map((q: IQuest) => (
 						<ListItem
 							link={getQuestDetailsPageLink(q)}
 							key={q.guid}
 							view=".view-main"
 							panelClose
 							title={q.title}
-							subtitle={q.getLastModifiedDateString()}
+							subtitle={utils.numberToModifiedDateString(
+								q.lastModified
+							)}
 							text={q.description}
-							after={q.getStepsCountText()}
+							after={utils.pluralize(q.steps, "Step", "Steps")}
 							selected={selectedQuest === q.slug}
 							onClick={() => setSelectedQuest(q.slug)}
 						></ListItem>

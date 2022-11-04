@@ -12,7 +12,7 @@ I set aside a little bit of my time to participate in what I call, _CodeJam_. Co
 
 -   Dynamic Navigation
 -   Dark Mode (for obvious reasons)
--   Simulated File System
+-   Open a Quests File (use `quests.json` in the `./testsave` folder)
 -   GUID Based Identification System
 -   Framework7 & DOM7 for GUI Management
 -   Data is stored in `.json` files _(for easy source control)_
