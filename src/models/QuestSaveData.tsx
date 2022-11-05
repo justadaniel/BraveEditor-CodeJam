@@ -13,7 +13,7 @@ export class QuestSaveData {
 	quests: IQuest[];
 
 	constructor(opts) {
-		Object.assign(this, { c: [] }, opts);
+		Object.assign(this, opts);
 	}
 
 	sortByModifiedDate() {

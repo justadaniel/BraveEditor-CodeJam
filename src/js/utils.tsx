@@ -1,5 +1,11 @@
 import React, { useState, mouseClickEvents } from "react";
 import {
+	fileOpen,
+	directoryOpen,
+	fileSave,
+	supported,
+} from "https://unpkg.com/browser-fs-access";
+import {
 	Page,
 	Navbar,
 	List,
@@ -33,6 +39,19 @@ const utils = {
 				/* clipboard write failed */
 			}
 		);
+	},
+	formatBytes(bytes, decimals = 2): string {
+		if (!+bytes) return "0 Bytes";
+
+		const k = 1024;
+		const dm = decimals < 0 ? 0 : decimals;
+		const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+		return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${
+			sizes[i]
+		}`;
 	},
 	sanitizeImportantString(value): string {
 		return value
@@ -106,8 +125,11 @@ const utils = {
 			timeStyle: "short",
 		});
 	},
-	openChooseFileDialog(guid: string): void {
-		f7.popup.open(`#choose-file-popup_${guid}`);
+	openChooseFileDialog(): void {
+		f7.popup.open(`#choose-file-popup`);
+	},
+	openSaveToDirectoryDialog(): void {
+		f7.popup.open(`#save-to-directory-popup`);
 	},
 	simulateMouseClickForElement(element: Element) {
 		mouseClickEvents.forEach((mouseEventType) =>
@@ -149,6 +171,20 @@ const utils = {
 		const content = await file.text();
 		const json: Type = JSON.parse(content);
 		return json as Type;
+	},
+	async saveToFileAsJson(data: any) {
+		// data.lastModified = Date.now();
+		console.log(`Current Time: ${Date.now()}`);
+		var json = JSON.stringify(data);
+
+		const blob = new Blob([json], {
+			type: "application/json",
+		});
+
+		var meh = await fileSave(blob, {
+			fileName: "quests.json",
+		});
+		console.log(meh);
 	},
 };
 export default utils;

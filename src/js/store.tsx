@@ -40,8 +40,9 @@ const store = createStore({
 			return state.products;
 		},
 		quests({ state }): IQuest[] {
-			var quests = Quest.sortByModifiedDate(state.quests as IQuest[]);
-			return quests;
+			let quests: IQuest[] = state.quests as IQuest[];
+			var quests_sorted: IQuest[] = Quest.sortByModifiedDate(quests);
+			return quests_sorted;
 		},
 		quest({ state }, guid: string): IQuest {
 			const quest = state.quests.find((obj) => {

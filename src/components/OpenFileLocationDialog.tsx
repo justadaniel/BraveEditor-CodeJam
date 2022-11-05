@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import * as ReactDOM from "react-dom";
-import AppSection from "../models/appsection";
+import {
+	fileOpen,
+	directoryOpen,
+	fileSave,
+	supported,
+} from "https://unpkg.com/browser-fs-access";
+import AppSection from "../models/AppSection";
 import Globals from "../js/globals";
-import BraveApp from "../components/app";
-
+import BraveApp from "./app";
 import {
 	f7,
 	f7ready,
@@ -37,7 +42,7 @@ import store from "../js/store";
 import { Quest } from "../models/Quest";
 import { IQuestSaveData, QuestSaveData } from "../models/QuestSaveData";
 
-const OpenFileLocationDialog = (guid: string) => {
+const OpenFileLocationDialog = () => {
 	const [loadedFile, setLoadedFile] = useState(undefined);
 	const [loadedSaveData, setLoadedSaveData] = useState(undefined);
 
@@ -75,7 +80,7 @@ const OpenFileLocationDialog = (guid: string) => {
 	}
 
 	function getFileSize(): string {
-		if (loadedFile != undefined) return `${loadedFile.size} bytes`;
+		if (loadedFile != undefined) return utils.formatBytes(loadedFile.size);
 		else return "";
 	}
 
@@ -94,7 +99,7 @@ const OpenFileLocationDialog = (guid: string) => {
 	}
 
 	return (
-		<Popup id={`choose-file-popup_${guid}`}>
+		<Popup id={`choose-file-popup`}>
 			<View>
 				<Page>
 					<Navbar>
@@ -146,26 +151,19 @@ const OpenFileLocationDialog = (guid: string) => {
 							readonly
 							disabled
 						/>
-						<ListInput
-							label="File Input"
-							id="fileinput"
-							type="file"
-							accept=".json"
-							style={{ display: "none" }}
-							onChange={async (e) => {
-								var file: File = await utils.loadFileFromPicker(
-									e
-								);
-								storeFileInMemory(file);
-							}}
-						/>
 					</List>
 					<List noHairlinesMd inset>
 						<ListButton
 							onClick={async () => {
-								f7.$(
-									`#choose-file-popup_${guid} #fileinput input[type="file"]`
-								).click();
+								const file = await fileOpen([
+									{
+										description: "JSON Files",
+										mimeTypes: ["application/json"],
+										extensions: [".json", ".txt"],
+										multiple: false,
+									},
+								]);
+								storeFileInMemory(file);
 							}}
 						>
 							Choose File

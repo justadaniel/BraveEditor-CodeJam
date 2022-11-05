@@ -1,3 +1,5 @@
+import IGuid from "./IGuid";
+
 export class InventoryItem {
 	guid: string;
 	slug: string;
@@ -6,7 +8,7 @@ export class InventoryItem {
 
 	/******* METHODS *******/
 	constructor(opts) {
-		Object.assign(this, { c: [] }, opts);
+		Object.assign(this, opts);
 	}
 
 	public toString(): string {
@@ -21,4 +23,9 @@ export class InventoryItem {
 enum EInventoryItemType {
 	Weapon = "weapon",
 	Crafting = "buildingMaterial",
+}
+
+export interface IInventoryItem extends IGuid {
+	title: string;
+	description: string;
 }

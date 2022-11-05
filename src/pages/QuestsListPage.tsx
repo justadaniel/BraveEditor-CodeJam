@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import AppSection from "../models/appsection";
+import AppSection from "../models/AppSection";
 import Globals from "../js/globals";
-import BraveApp from "./app";
+import BraveApp from "../components/app";
 import { IQuest, IQuestStep, Quest } from "../models/Quest";
 import { QuestStep } from "../models/QuestStep";
 import store from "../js/store";
@@ -30,7 +30,7 @@ import {
 } from "framework7-react";
 import utils from "../js/utils";
 
-const QuestsList = () => {
+const QuestsListPage = () => {
 	const RECENTS_COUNT: number = 1;
 	const USE_TIMEBASED_SPLIT_LISTS: boolean = false;
 
@@ -94,11 +94,7 @@ const QuestsList = () => {
 						>
 							<p>No Quests Found</p>
 							<Button
-								onClick={() =>
-									utils.openChooseFileDialog(
-										Globals.FILE_UPLOAD_GUID
-									)
-								}
+								onClick={() => utils.openChooseFileDialog()}
 							>
 								Open Quests File
 							</Button>
@@ -226,6 +222,25 @@ const QuestsList = () => {
 							className="tooltip-init"
 						/>
 					</Link>
+					<Link
+						data-tooltip="Not Implemented Yet"
+						className={
+							isLoading || !hasFileLoaded
+								? "disabled"
+								: "tooltip-init"
+						}
+						style={{
+							display: !isLoading ? "block" : "none",
+						}}
+						onClick={() => utils.openSaveToDirectoryDialog()}
+					>
+						<Icon
+							ios="material:file_download"
+							android="material:file_download"
+							aurora="material:file_download"
+							className="tooltip-init"
+						/>
+					</Link>
 				</NavRight>
 			</Navbar>
 
@@ -235,4 +250,4 @@ const QuestsList = () => {
 	);
 };
 
-export default QuestsList;
+export default QuestsListPage;

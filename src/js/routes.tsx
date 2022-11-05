@@ -1,5 +1,5 @@
-import QuestDetailsPage from "../pages/quest_details";
-import QuestDetailsEmpty from "../pages/quest_details_empty";
+import QuestDetailsPage from "../pages/QuestDetailsWindow";
+import QuestDetailsEmpty from "../pages/QuestDetailsEmpty";
 
 import NotFoundPage from "../pages/404";
 

@@ -1,1 +1,6 @@
-// console.log(cordova);
+// console.log("It Worked!");
+
+// console.log(window);
+
+// console.log(window.cordova);
+

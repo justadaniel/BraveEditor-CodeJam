@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import AppSection from "../models/appsection";
+import AppSection from "../models/AppSection";
 import Globals from "../js/globals";
-import BraveApp from "../components/app";
+import BraveApp from "./app";
 import {
 	f7,
 	f7ready,

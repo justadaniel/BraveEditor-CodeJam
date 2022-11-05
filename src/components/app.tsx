@@ -7,10 +7,11 @@ import routes from "../js/routes";
 import store from "../js/store";
 
 import Globals from "../js/globals";
-import AppSectionsSidebar from "./app_sections_sidebar";
-import QuestsList from "./quests_list_page";
+import AppSectionsSidebar from "./AppSectionsSidebar";
+import QuestsListPage from "../pages/QuestsListPage";
 import NotFoundPage from "../pages/404";
-import OpenFileLocationDialog from "./open_file_dialog";
+import OpenFileLocationDialog from "./OpenFileLocationDialog";
+import SaveFileToLocationDialog from "./SaveFileToLocationDialog";
 
 const BraveApp = () => {
 	// Login screen demo data
@@ -74,14 +75,15 @@ const BraveApp = () => {
 
 			{/* Left panel with cover effect when hidden */}
 			<Panel class="master" left cover resizable visibleBreakpoint={960}>
-				<View>{QuestsList()}</View>
+				<View>{QuestsListPage()}</View>
 			</Panel>
 
 			{/* Your main view, should have "view-main" class */}
 			<View main className="safe-areas" url="/" />
 
 			{/* Popup */}
-			{OpenFileLocationDialog(Globals.FILE_UPLOAD_GUID)}
+			{OpenFileLocationDialog()}
+			{SaveFileToLocationDialog()}
 		</App>
 	);
 };

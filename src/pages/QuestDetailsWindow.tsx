@@ -32,6 +32,7 @@ import { QuestReward, IQuestReward } from "../models/QuestReward";
 import { QuestStep, IQuestStep } from "../models/QuestStep";
 import store from "../js/store";
 import { compileString } from "sass";
+import QuestRewardRow from "../components/QuestRewardRow";
 
 const QuestDetailsWindow = (props) => {
 	const PAGE_TITLE: string = "Details";
@@ -67,6 +68,9 @@ const QuestDetailsWindow = (props) => {
 
 	const [isSorting, setIsSorting] = useState(false);
 	const [wereChangesMade, setWereChangesMade] = useState(false);
+	const [lastModifiedTime, setLastModifiedTime] = useState(
+		currentQuest.lastModified
+	);
 
 	const copyToClipboardSymbolF7: string = "doc_on_clipboard";
 	const copyToClipboardSymbolMaterial: string = "content_copy";
@@ -102,6 +106,9 @@ const QuestDetailsWindow = (props) => {
 		currentQuest.steps = questSteps;
 		currentQuest.rewards = questRewards;
 
+		await setLastModifiedTime(Date.now());
+		currentQuest.lastModified = lastModifiedTime;
+
 		store.dispatch("updateQuest", { currentQuest });
 		console.log("Changes Comitted!");
 		console.log(currentQuest);
@@ -123,6 +130,7 @@ const QuestDetailsWindow = (props) => {
 			currentQuest.rewards == undefined ? [] : currentQuest.rewards
 		);
 
+		setLastModifiedTime(currentQuest.lastModified);
 		setWereChangesMade(false);
 	}
 
@@ -154,6 +162,7 @@ const QuestDetailsWindow = (props) => {
 		];
 
 		setQuestSteps(stepsWorkingCopy);
+		markAsChanged();
 	}
 
 	async function addQuestReward() {
@@ -180,6 +189,7 @@ const QuestDetailsWindow = (props) => {
 		];
 
 		setQuestRewards(rewardsWorkingCopy);
+		markAsChanged();
 	}
 
 	async function deleteQuestStep(guid: string) {
@@ -300,6 +310,13 @@ const QuestDetailsWindow = (props) => {
 									deleteQuestReward(reward.guid)
 								}
 							>
+								<ListInput
+									slot="title"
+									label="Name"
+									type="text"
+									placeholder={reward.title}
+									clearButton
+								/>
 								<Stepper
 									value={reward.quantity}
 									min="1"
@@ -404,6 +421,15 @@ const QuestDetailsWindow = (props) => {
 									} */}
 					</Button>
 				</ListItem>
+				<ListItem
+					header="Last Modified"
+					title={
+						lastModifiedTime != "" || lastModifiedTime != undefined
+							? utils.numberToModifiedDateString(lastModifiedTime)
+							: "None"
+					}
+					noChevron
+				/>
 			</List>
 
 			{/* <BlockTitle>General Information</BlockTitle> */}
